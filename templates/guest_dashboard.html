@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Guest Dashboard{% endblock %}
+
+{% block head %}
+<style>
+    .container.guest-dashboard {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 0 1rem;
+        color: #fff;
+    }
+
+    .neon-text {
+        color: #0ff;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 8px #0ff, 0 0 20px #0ff;
+    }
+
+    .info-text {
+        font-size: 1.1rem;
+        color: #aaa;
+    }
+
+    .warning-text {
+        color: #f00;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .guest-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .btn.neon-btn {
+        padding: 12px 24px;
+        background-color: #0ff;
+        border: none;
+        color: #000;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        box-shadow: 0 0 10px #0ff;
+        width: 220px;
+    }
+
+    .btn.neon-btn:hover {
+        background-color: #0f0;
+        color: #000;
+        box-shadow: 0 0 15px #0f0;
+    }
+
+    @media (min-width: 600px) {
+        .guest-actions {
+            flex-direction: row;
+        }
+
+        .btn.neon-btn {
+            width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container guest-dashboard">
+    <h2 class="neon-text">👤 Guest Dashboard</h2>
+    <p class="info-text">Welcome! You're exploring the Disease Diagnosis System as a guest.</p>
+    <p class="warning-text">⚠️ Your data won’t be saved unless you upgrade, register, or log in.</p>
+
+    <div class="guest-actions">
+        <a href="{{ url_for('diagnose') }}" class="btn neon-btn">🔍 Try Diagnosis</a>
+        <a href="{{ url_for('login') }}" class="btn neon-btn">🔐 Login</a>
+        <a href="{{ url_for('upgrade_guest') }}" class="btn neon-btn">⚡ Upgrade Account</a>
+
+    </div>
+</div>
+{% endblock %}

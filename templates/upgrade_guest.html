@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade to Full Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 10px;
+        }
+        .upgrade-container {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #0ff;
+            margin-bottom: 20px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #111;
+            border: 2px solid #0ff;
+            border-radius: 10px;
+            color: #0ff;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus {
+            border-color: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+        .btn {
+            background: #0ff;
+            color: #000;
+            padding: 12px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .message.success {
+            color: #0f0;
+        }
+        .message.error {
+            color: #f00;
+        }
+        .toggle-password {
+            position: relative;
+        }
+        .toggle-password-icon {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #0ff;
+        }
+        a.back-link {
+            display: block;
+            margin-top: 20px;
+            color: #0ff;
+            text-decoration: none;
+        }
+        a.back-link:hover {
+            text-decoration: underline;
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="upgrade-container">
+        <h2>Upgrade to Full Account</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" onsubmit="this.querySelector('button').disabled = true;">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+
+            <div class="toggle-password">
+                <input type="password" name="password" placeholder="Password" id="password" required>
+                <span class="toggle-password-icon" onclick="togglePassword('password')">👁️</span>
+            </div>
+
+            <div class="toggle-password">
+                <input type="password" name="confirm" placeholder="Confirm Password" id="confirm" required>
+                <span class="toggle-password-icon" onclick="togglePassword('confirm')">👁️</span>
+            </div>
+
+            <button type="submit" class="btn">Upgrade Account</button>
+        </form>
+
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>

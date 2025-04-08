@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="neon-text">📝 Create Account</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('register') }}" method="POST" class="form-box" onsubmit="return validateForm()">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+
+        <label for="confirm">Confirm Password:</label>
+        <input type="password" name="confirm" id="confirm" required>
+
+        <button type="submit" class="btn">Register</button>
+    </form>
+
+    <div class="extra-options">
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+</div>
+
+<!-- Embedded CSS -->
+<style>
+    .neon-text {
+        color: #fff;
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+    }
+
+    .btn {
+        background-color: #333;
+        border: 1px solid #fff;
+        color: #fff;
+        padding: 10px 20px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn:hover {
+        background-color: #ff00ff;
+        border: 1px solid #ff00ff;
+        box-shadow: 0 0 15px #ff00ff;
+    }
+
+    .form-box {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .form-box input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ff00ff;
+        padding: 10px;
+        margin-bottom: 15px;
+        width: 100%;
+        color: white;
+    }
+
+    .form-box input:focus {
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+</style>
+
+<!-- Embedded JavaScript -->
+<script>
+    function validateForm() {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm').value;
+        
+        if (password !== confirm) {
+            alert('Passwords do not match!');
+            return false; // Prevent form submission
+        }
+        return true;
+    }
+</script>
+{% endblock %}

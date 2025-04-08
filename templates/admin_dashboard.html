@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block head %}
+<style>
+    .admin-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: var(--light-bg);
+        box-shadow: 0 0 10px var(--primary-light);
+        transition: 0.3s ease;
+    }
+
+    .admin-section h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 0.5rem;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        border: 1px solid var(--primary-light);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #2a2a3c;
+        background: #141420;
+    }
+
+    .admin-table th {
+        background: var(--primary-light);
+        color: var(--text-color);
+        text-transform: uppercase;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #1f1f2f;
+    }
+
+    .neon-text {
+        color: var(--neon);
+        text-shadow: 0 0 5px var(--neon), 0 0 10px var(--neon);
+    }
+
+    .back-btn {
+        margin-top: 2rem;
+        display: inline-block;
+        background: var(--primary);
+        color: #000;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+        color: #000;
+    }
+
+    .stats-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .stats-list li {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .filter-section, .print-section {
+        margin-top: 1.5rem;
+    }
+
+    .filter-section input[type="date"] {
+        padding: 8px;
+        border-radius: 6px;
+        border: none;
+        background: #1e1e2f;
+        color: #fff;
+    }
+
+    .filter-section button, .print-section button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        background: var(--accent);
+        border: none;
+        cursor: pointer;
+        color: #000;
+        margin-left: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="neon-text">⚙️ Admin Dashboard</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- System Stats -->
+    <div class="admin-section">
+        <h3>📊 System Statistics</h3>
+        <ul class="stats-list">
+            <li><strong>Total Users:</strong> {{ stats.total_users }}</li>
+            <li><strong>Admin Users:</strong> {{ stats.admin_users }}</li>
+            <li><strong>Guest Logins:</strong> {{ stats.guest_logins }}</li>
+            <li><strong>Total Diagnoses:</strong> {{ stats.total_diagnoses }}</li>
+        </ul>
+    </div>
+
+    <!-- Filter Logs by Date -->
+    <div class="admin-section filter-section">
+        <h3>📅 Filter Logs by Date</h3>
+        <form method="GET" action="{{ url_for('admin_dashboard') }}">
+            <input type="date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+            <input type="date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    <!-- Recent Logs -->
+    <div class="admin-section">
+        <h3>📝 Recent Activity Logs</h3>
+        {% if logs %}
+            <div class="print-section" style="text-align:right;">
+                <button onclick="window.print()">🖨️ Print Logs</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Action</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.username }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recent logs found.</p>
+        {% endif %}
+    </div>
+
+    <!-- Back Link -->
+    <div class="admin-section" style="text-align:center;">
+        <a href="{{ url_for('dashboard') }}" class="back-btn">⬅ Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

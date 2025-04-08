@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Disease Diagnosis System{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='reminder.js') }}" defer></script>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="dark-theme">
+    
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">🧬 Diagnosis App</div>
+            <ul class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('diagnose') }}">Diagnose</a></li>
+                    <li><a href="{{ url_for('reminders') }}">Reminders</a></li>
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    <li><a href="{{ url_for('admin_login') }}">Admin Login</a></li>
+                    <li><a href="{{ url_for('admin_register') }}">Admin Register</a></li> 
+                {% endif %}
+            </ul>
+            
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Disease Diagnosis System | Built by Group 4</p>
+    </footer>
+
+</body>
+</html>

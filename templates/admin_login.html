@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+
+{% block head %}
+<style>
+    .login-box {
+        max-width: 400px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: var(--light-bg);
+        border-radius: 10px;
+        box-shadow: 0 0 15px var(--primary-light);
+    }
+
+    .login-box h2 {
+        text-align: center;
+        color: var(--neon);
+        text-shadow: 0 0 5px var(--neon);
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 6px;
+        border: none;
+        background-color: #1f1f2f;
+        color: #fff;
+        outline: none;
+        transition: 0.3s ease;
+    }
+
+    .form-group input:focus {
+        box-shadow: 0 0 6px var(--neon);
+    }
+
+    .btn {
+        width: 100%;
+        padding: 0.7rem;
+        background-color: var(--primary);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--primary-light);
+    }
+
+    .alert {
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    .alert-success {
+        background-color: #2ecc71;
+        color: #000;
+    }
+
+    .alert-danger {
+        background-color: #e74c3c;
+        color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-box">
+    <h2>🛡️ Admin Login</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Admin Username</label>
+            <input type="text" name="username" id="username" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Admin Password</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+
+    <a class="back-link" href="{{ url_for('login') }}">← Back to User Login</a>
+</div>
+{% endblock %}

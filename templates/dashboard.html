@@ -1,0 +1,39 @@
+<!-- Dashboard -->
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="neon-text">Welcome, {{ current_user.username }}!</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-cards">
+        <div class="card neon-border">
+            <h3>🧪 Diagnose</h3>
+            <p>Start a new disease prediction.</p>
+            <a href="{{ url_for('diagnose') }}" class="btn">Go</a>
+        </div>
+
+        <div class="card neon-border">
+            <h3>💊 Medicine Reminders</h3>
+            <p>Manage and receive alerts.</p>
+            <a href="{{ url_for('reminders') }}" class="btn">Remind Me</a>
+        </div>
+
+        {% if current_user.is_admin %}
+        <div class="card neon-border admin-card">
+            <h3>📊 Admin Panel</h3>
+            <p>View logs and system stats.</p>
+            <a href="{{ url_for('admin') }}" class="btn">Access</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

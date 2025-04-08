@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Medicine Reminders{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="neon-text">💊 Medicine Reminders</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="form-box">
+        <form action="{{ url_for('reminders') }}" method="POST">
+            <div class="form-group">
+                <label for="medicine">Medicine Name:</label>
+                <input type="text" name="medicine" id="medicine" required placeholder="e.g., Paracetamol">
+            </div>
+
+            <div class="form-group">
+                <label for="time">Time:</label>
+                <input type="time" name="time" id="time" required>
+            </div>
+
+            <button type="submit" class="btn neon-btn">➕ Add Reminder</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <h3 class="section-heading">🗓️ Your Reminders</h3>
+
+    {% if reminders %}
+        <ul class="reminder-list">
+            {% for reminder in reminders %}
+                <li class="reminder-item" data-medicine="{{ reminder.medicine }}" data-schedule="{{ reminder.time }}">
+                    <span class="reminder-text">
+                        <strong>{{ reminder.medicine }}</strong> at {{ reminder.time }}
+                    </span>
+                    <form action="{{ url_for('delete_reminder', id=reminder.id) }}" method="POST" class="inline-form">
+                        <button type="submit" class="btn small danger">✖</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-reminders">You haven’t set any reminders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

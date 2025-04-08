@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin Signup{% endblock %}
+{% block content %}
+<div class="form-container">
+    <h2>👑 Admin Registration</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <input type="password" name="confirm" placeholder="Confirm Password" required><br>
+        <input type="text" name="secret_key" placeholder="Admin Secret Key" required><br>
+        <button type="submit">Register as Admin</button>
+    </form>
+</div>
+{% endblock %}

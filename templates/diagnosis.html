@@ -1,0 +1,36 @@
+<!-- Diagnosis input -->
+{% extends "base.html" %}
+{% block title %}Disease Diagnosis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="neon-text">🧪 Disease Diagnosis</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('diagnose') }}" method="POST" class="form-box">
+        <label for="symptoms">Enter Symptoms (comma-separated):</label>
+        <input type="text" name="symptoms" id="symptoms" placeholder="e.g. fever, cough, fatigue" required>
+
+        <button type="submit" class="btn">Diagnose</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result-box">
+            <h3>🩺 Predicted Disease:</h3>
+            <p class="prediction neon-text">{{ prediction }}</p>
+        </div>
+
+        <div class="alert alert-success">
+            💡 Predicted Disease: <strong>{{ prediction }}</strong>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
