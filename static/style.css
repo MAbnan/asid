@@ -730,3 +730,7 @@ body {
 .guest-actions {
     text-align: center;
 }
+#rem{
+
+    font-style: var(--text-color white);
+}

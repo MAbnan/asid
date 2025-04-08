@@ -394,20 +394,23 @@ def diagnose():
         prediction_index = np.argmax(model.predict(input_scaled), axis=1)[0]
         prediction = label_encoder.inverse_transform([prediction_index])[0]
 
-        user_type = session.get('user_type', 'user')
+        username = session.get('user_type', 'user')
         username = session.get('username', current_user.username if current_user.is_authenticated else "Guest")
-
-        if user_type == 'guest':
-            flash(f"[Guest] Consult a doctor for: {prediction}", "info")
+        if prediction == 'presbyacusis':
+            flash("No disease detected based on the provided symptoms.please enter the correct symptoms", "info")
         else:
-            cur = get_db().cursor()
-            cur.execute("INSERT INTO diagnosis_logs (username, symptoms, prediction) VALUES (?, ?, ?)",
-                        (username, symptoms_input, prediction))
-            get_db().commit()
-            flash(f"Diagnosis complete: {prediction}", "info")
+            if username == 'guest':
+                flash(f"[Guest] Consult a doctor for: {prediction}", "info")
+            else:
+                cur = get_db().cursor()
+                cur.execute("INSERT INTO diagnosis_logs (username, symptoms, prediction) VALUES (?, ?, ?)",
+                            (username, symptoms_input, prediction))
+                get_db().commit()
+                flash(f"Diagnosis complete: {prediction}", "info")
 
-    return render_template("diagnosis.html", prediction=prediction)
-
+            return render_template("diagnosis.html", prediction=prediction)
+        
+        return render_template("diagnosis.html",)
 
 @app.route('/reminders', methods=['GET', 'POST'])
 @login_required
@@ -415,16 +418,29 @@ def reminders():
     cur = get_db().cursor()
 
     if request.method == 'POST':
-        medicine = request.form['medicine']
-        time = request.form['time']
+        # Get form data and strip any leading/trailing spaces
+        medicine = request.form.get('medicine_name', '').strip()
+        time = request.form.get('schedule', '').strip()
+        dosage = request.form.get('dosage', '').strip()  # Optional field
+        start_date = request.form.get('start_date', '').strip()  # Optional field
+        end_date = request.form.get('end_date', '').strip()  # Optional field
+
+        # Validate required fields
+        if not medicine or not time:
+            flash("Please provide both medicine name and time.", "error")
+            return redirect(url_for('reminders'))
+
+        # Insert reminder into the database
         cur.execute("""
             INSERT INTO medicine_reminders (user_id, medicine_name, dosage, schedule, start_date, end_date)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, (current_user.id, medicine, '', time, '', ''))
+        """, (current_user.id, medicine, dosage, time, start_date, end_date))
         get_db().commit()
+
         flash("Reminder added!", "success")
         return redirect(url_for('reminders'))
 
+    # Retrieve all reminders for the logged-in user
     cur.execute("SELECT * FROM medicine_reminders WHERE user_id=?", (current_user.id,))
     reminders = cur.fetchall()
     return render_template('reminders.html', reminders=reminders)
@@ -434,11 +450,11 @@ def reminders():
 @login_required
 def delete_reminder(id):
     cur = get_db().cursor()
+    # Delete reminder for the current user only
     cur.execute("DELETE FROM medicine_reminders WHERE id=? AND user_id=?", (id, current_user.id))
     get_db().commit()
     flash("Reminder deleted.", "info")
     return redirect(url_for('reminders'))
-
 
 @app.route('/admin')
 @login_required
@@ -459,8 +475,6 @@ def admin():
     logs = cur.fetchall()
 
     return render_template("admin.html", stats=stats, logs=logs)
-print(app.url_map)
-
 
 
 if __name__ == '__main__':

@@ -1,4 +1,3 @@
-<!-- Diagnosis input -->
 {% extends "base.html" %}
 {% block title %}Disease Diagnosis{% endblock %}
 
@@ -18,6 +17,10 @@
         <label for="symptoms">Enter Symptoms (comma-separated):</label>
         <input type="text" name="symptoms" id="symptoms" placeholder="e.g. fever, cough, fatigue" required>
 
+        <!-- Voice input button -->
+        <button type="button" class="btn" onclick="startRecognition()">🎤 Start Voice Input</button>
+        <button type="button" class="btn" onclick="stopRecognition()">✋ Stop Voice Input</button>
+
         <button type="submit" class="btn">Diagnose</button>
     </form>
 
@@ -32,5 +35,60 @@
         </div>
     {% endif %}
 
+    <!-- Listening status message -->
+    <div id="listening-status" class="neon-text" style="display:none;">Listening...</div>
+
 </div>
+
+<!-- Embedded JavaScript for Speech Recognition -->
+<script>
+    // Check if the browser supports Speech Recognition API
+    if ('webkitSpeechRecognition' in window) {
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        // Show listening status
+        function showListeningStatus() {
+            document.getElementById("listening-status").style.display = 'block';
+        }
+
+        // Hide listening status
+        function hideListeningStatus() {
+            document.getElementById("listening-status").style.display = 'none';
+        }
+
+        // Start voice recognition
+        function startRecognition() {
+            showListeningStatus();
+            recognition.start();
+        }
+
+        // Stop voice recognition
+        function stopRecognition() {
+            hideListeningStatus();
+            recognition.stop();
+        }
+
+        // Capture speech input and set it to the symptoms input field
+        recognition.onresult = function(event) {
+            var transcript = event.results[event.resultIndex][0].transcript;
+            document.getElementById("symptoms").value = transcript; // Set the symptoms input field with speech input
+        }
+
+        // Handle recognition errors
+        recognition.onerror = function(event) {
+            console.log("Speech recognition error: ", event.error);
+        }
+
+        // When speech recognition ends, hide the listening status
+        recognition.onend = function() {
+            hideListeningStatus();
+        }
+    } else {
+        alert("Your browser does not support Speech Recognition.");
+    }
+</script>
+
 {% endblock %}
